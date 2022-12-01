@@ -7,7 +7,7 @@ function createGamesPage(gameData) {
     return;
   }
 
-  for (var result of gameData) {
+  for (let result of gameData) {
 
     // Create div
     let div = document.createElement("div");
@@ -24,23 +24,34 @@ function createGamesPage(gameData) {
 
     // Create Rating
     let rating = document.createElement("p");
-    rating.appendChild(document.createTextNode("Rating: " + result.rating + "/" + result.rating_top));
+    rating.innerHTML = "<b>Rating: </b>" + result.rating + "/" + result.rating_top;
     div.appendChild(rating);
 
     // Create Released
     let released = document.createElement("p");
     if (result.released != null) {
       let rd = result.released.split("-");
-      released.appendChild(document.createTextNode(rd[2] + "/" + rd[1] + "/" + rd[0]));
+      released.innerHTML = "<b>Released:</b> "+rd[2] + "/" + rd[1] + "/" + rd[0]
       div.appendChild(released);
     }
 
-    // Create Link
+    // Create publishers
+    let plat = document.createElement("p");
+    plat.innerHTML = "<b>Plataforms:</b>";
+    for (let p of result.platforms) {
+      plat.innerHTML += " " + p.platform.name + ";";
+    }
+    div.append(plat);
 
+    // Create Link
     let link = document.createElement("a");
     link.href = "details.html?" + result.id;
     link.appendChild(document.createTextNode("Details"));
     div.appendChild(link);
+
+    div.onclick = function() {
+      window.location = link.href;
+    }
 
     div.className = "game-div";
     document.getElementById("game-page").appendChild(div);
@@ -119,9 +130,27 @@ function buildDetails(detail) {
   page.appendChild(image);
   */
 
+  // Create genres
+  let gen = document.createElement("p");
+  gen.innerHTML = "<br/><b>Genres:</b>";
+  for (let g of detail.genres) {
+    gen.innerHTML += " " + g.name + ";";
+  }
+
+  page.append(gen);
+
+  // Website
+  let web = document.createElement("p");
+  web.innerHTML = "<b>Website:</b><a href=" + detail.website + ">" + detail.website + "<a/><br/><br/>";
+  page.appendChild(web);
+
   // description
+  let descHeader = document.createElement("h2");
+  descHeader.appendChild(document.createTextNode("Description:"));
+  page.appendChild(descHeader);
+
   let desc = document.createElement("p");
-  desc.innerHTML = detail.description;
+  desc.innerHTML = "<br/>" + detail.description;
   page.appendChild(desc);
 }
 
